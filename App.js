@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './screens/LoginScreen';
 import OtpScreen from './screens/OtpScreen';
+import SignUp from './screens/SignUp';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -10,6 +11,7 @@ const StackNavigator = () => (
   <Navigator screenOptions={{headerShown: false}}>
     <Screen name="Login" component={LoginScreen} />
     <Screen name="OtpVerify" component={OtpScreen} />
+    <Screen name="Signup Page" component={SignUp} />
   </Navigator>
 );
 class App extends Component {

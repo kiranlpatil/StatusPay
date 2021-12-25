@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import httpDelegateService, {getAPI} from '../services/http-delegate.service';
 import RNOtpVerify from 'react-native-otp-verify';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 class OtpScreen extends Component {
   constructor(props) {
@@ -116,28 +117,31 @@ class OtpScreen extends Component {
     }
   };
 
-  setData = async result => {
-    console.log('SET DATA RUN');
-    let body = {'Mobile Number': this.props.route.params.mobile.toString()};
-    console.log(body);
-    httpDelegateService('https://statuspe.herokuapp.com/auth/token', body).then(
-      async res => {
-        try {
-          // await SecureStorage.setItemAsync('token', res.token);
-          console.log('TokenSet');
-          // await AsyncStorage.setItem('userId', JSON.parse(result.user).user_id);
-          // await AsyncStorage.setItem('district', JSON.parse(result.user).district);
-          // await AsyncStorage.setItem('state', JSON.parse(result.user).state);
-        } catch (error) {
-          console.log(error);
-          Alert.alert(
-            'Access not granted',
-            'Give Permission to access storage',
-          );
-        }
-      },
-    );
-  };
+  setData = async (result) => {
+    let body = { "Mobile Number": this.props.route.params.mobile.toString() };
+    console.log(body)
+    httpDelegateService("https://statuspe.herokuapp.com/auth/token",body)
+    .then(async (res)=>{
+      try {
+        await EncryptedStorage.setItem('token', res.token);
+        console.log("TokenSet")
+        let r = await JSON.parse(result.user)
+        console.log(r)
+        let uniIDFetch = await fetch(
+          `https://statuspe.herokuapp.com//user/genuserid?mobile=${JSON.parse(result.user).mobile}`
+        );
+        let uniId = await uniIDFetch.json(); 
+        await EncryptedStorage.setItem('userId', JSON.parse(result.user).user_id.toString());
+        await EncryptedStorage.setItem('district', JSON.parse(result.user).district);
+        await EncryptedStorage.setItem('state', JSON.parse(result.user).state);
+        await EncryptedStorage.setItem('user_mobile', JSON.parse(result.user).mobile.toString());
+        await EncryptedStorage.setItem('uniID', uniId.toString());
+      } catch (error) {
+          console.log(error)
+          Alert.alert('Access not granted', 'Give Permission to access storage')
+      }
+    })
+};
 
   resetTimer = () => {
     this.setState({timer: 59});
