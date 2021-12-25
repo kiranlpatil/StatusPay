@@ -12,6 +12,8 @@ target 'ShareWhatsApp' do
     :hermes_enabled => false
   )
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'ShareWhatsAppTests' do
     inherit! :complete
     # Pods for testing
