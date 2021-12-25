@@ -192,8 +192,11 @@ class OtpScreen extends Component {
 
   otpHandler = message => {
     console.log('message - ', message);
-    const otp = /(\d{4})/g.exec(message)[1];
-    // this.setState({otp});
+    const otp = message.split(' ')[5];
+    this.setState({pin1: otp.split('')[0]});
+    this.setState({pin2: otp.split('')[1]});
+    this.setState({pin3: otp.split('')[2]});
+    this.setState({pin4: otp.split('')[3]});
     RNOtpVerify.removeListener();
     Keyboard.dismiss();
   };

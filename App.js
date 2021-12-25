@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './screens/LoginScreen';
 import OtpScreen from './screens/OtpScreen';
 import SignUp from './screens/SignUp';
+import DashboardScreen from './screens/DashboardScreen';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -12,6 +13,7 @@ const StackNavigator = () => (
     <Screen name="Login" component={LoginScreen} />
     <Screen name="OtpVerify" component={OtpScreen} />
     <Screen name="Signup Page" component={SignUp} />
+    <Screen name="Dashboard" component={DashboardScreen} />
   </Navigator>
 );
 class App extends Component {
