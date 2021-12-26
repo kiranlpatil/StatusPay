@@ -5,27 +5,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ProfileScreen from './ProfileScreen';
 import AdminDashboard from './AdminScreen';
 import ClientScreen from './ClientScreen';
+import HomeScreen from './HomeScreen';
 
 function Feed() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Feed!</Text>
-    </View>
-  );
-}
-
-function Profile() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-function Notifications() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Notifications!</Text>
     </View>
   );
 }
@@ -43,7 +28,7 @@ const MyTabs = () => {
       shifting={true}>
       <Tab.Screen
         name="Feed"
-        component={Feed}
+        component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
           tabBarColor: '#1f65ff',
