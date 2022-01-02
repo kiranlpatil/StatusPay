@@ -10,8 +10,8 @@ const {Navigator, Screen} = createStackNavigator();
 
 const StackNavigator = () => (
   <Navigator screenOptions={{headerShown: false}}>
-    {/* <Screen name="Login" component={LoginScreen} /> */}
-    {/* <Screen name="OtpVerify" component={OtpScreen} /> */}
+     <Screen name="Login" component={LoginScreen} />
+     <Screen name="OtpVerify" component={OtpScreen} />
     <Screen name="Dashboard" component={DashboardScreen} />
     <Screen name="AdCampaign" component={AdCampaign} />
   </Navigator>
