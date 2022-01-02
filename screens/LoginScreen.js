@@ -11,6 +11,7 @@ import {
   StatusBar,
 } from 'react-native';
 import httpDelegateService from '../services/http-delegate.service';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -64,6 +65,50 @@ class LoginScreen extends Component {
       // console.log(Application.androidId);
     }
   };
+
+  componentDidMount(){
+    this.getData()
+  }
+
+  getData = async () => {
+    console.log("GET DATA RUN")
+    try {
+        const res = await EncryptedStorage.getItem("token")
+        await EncryptedStorage.setItem('isAdmin', "true");
+        console.log(res,"TOKEN RES")
+        if (res) {
+            let Token = {"Token": res};
+            console.log(res)
+            httpDelegateService('https://statuspe.herokuapp.com/auth/decode_token',Token)
+                .then(async (r) => {
+                    if (r.state){
+                        let res = await fetch(
+                            `https://statuspe.herokuapp.com//user/genuserid?mobile=${r.user_mobile}`
+                          );
+                        let uniId = await res.json();
+                        await EncryptedStorage.setItem('user_mobile', r.user_mobile);
+                        await EncryptedStorage.setItem('district', r.district);
+                        await EncryptedStorage.setItem('state', r.state);
+                        await EncryptedStorage.setItem('uniId', uniId);
+                        if (r.isAdmin && isAdmin == true){
+                            await EncryptedStorage.setItem('isAdmin', true);
+                        }
+                        this.state.navigation.navigate('Dashboard');
+                    }else{
+                        console.log(r)
+                        this.setState({isLoading:false})
+                        return
+                    }
+                })
+        }else{
+            this.setState({isLoading:false})
+            return
+        }
+    } catch (error) {
+        console.log(error)
+        Alert.alert('Access not granted', 'Give Permission to access storage')
+    }
+};
 
   render() {
     const {value} = this.state;
