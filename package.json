@@ -30,6 +30,7 @@
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-localize": "^2.1.7",
+    "react-native-image-picker": "^4.6.0",
     "react-native-modal": "^2.4.0",
     "react-native-otp-verify": "^1.0.4",
     "react-native-paper": "^4.11.1",

@@ -10,6 +10,7 @@ import './src/constants/IMLocalize'
 import Selector from './screens/LanguageSelector';
 import FAQ from './screens/Faq';
 import PremiumScreen from './screens/PremiumScreen';
+import AdCampaign from './screens/AdCampaign';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -23,6 +24,7 @@ const StackNavigator = () => (
     <Screen name='LangSetting' component={Selector} />
     <Screen name='FAQ' component={FAQ} />
     <Screen name='PremiumScreen' component={PremiumScreen} />
+    <Screen name="AdCampaign" component={AdCampaign} />
   </Navigator>
 );
 class App extends Component {

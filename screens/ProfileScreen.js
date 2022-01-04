@@ -150,7 +150,8 @@ const ProfileScreen = props => {
               <Text style={styles.menuItemText}>{t('profile:whatsappStatusSaver')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple>
+          <TouchableRipple
+            onPress={() => props.navigation.navigate('AdCampaign')}>
             <View style={styles.menuItem}>
               <MaterialCommunityIcons
                 name="caps-lock"

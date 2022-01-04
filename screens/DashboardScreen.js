@@ -6,28 +6,12 @@ import ProfileScreen from './ProfileScreen';
 import AdminDashboard from './AdminScreen';
 import ClientScreen from './ClientScreen';
 import { useTranslation } from 'react-i18next';
-
+import HomeScreen from './HomeScreen';
 
 function Feed() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Feed!</Text>
-    </View>
-  );
-}
-
-function Profile() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-function Notifications() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Notifications!</Text>
     </View>
   );
 }
@@ -46,7 +30,7 @@ const MyTabs = () => {
       shifting={true}>
       <Tab.Screen
         name="Feed"
-        component={Feed}
+        component={HomeScreen}
         options={{
           tabBarLabel: t('navigate:home'),
           tabBarColor: '#1f65ff',
