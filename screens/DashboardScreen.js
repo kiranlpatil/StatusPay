@@ -5,6 +5,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ProfileScreen from './ProfileScreen';
 import AdminDashboard from './AdminScreen';
 import ClientScreen from './ClientScreen';
+import { useTranslation } from 'react-i18next';
+
 
 function Feed() {
   return (
@@ -34,6 +36,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 const MyTabs = () => {
   const [isAdmin, setIsAdmin] = React.useState(true);
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
@@ -45,7 +48,7 @@ const MyTabs = () => {
         name="Feed"
         component={Feed}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: t('navigate:home'),
           tabBarColor: '#1f65ff',
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="home" color={color} size={26} />
@@ -56,7 +59,7 @@ const MyTabs = () => {
         name="Client"
         component={ClientScreen}
         options={{
-          tabBarLabel: 'Client',
+          tabBarLabel: t('navigate:client'),
           tabBarColor: '#7f00ff',
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="bell" color={color} size={26} />
@@ -68,7 +71,7 @@ const MyTabs = () => {
           name="AdminDashboard"
           component={AdminDashboard}
           options={{
-            tabBarLabel: 'Admin',
+            tabBarLabel: t('navigate:admin'),
             tabBarColor: '#008000',
             tabBarIcon: ({color}) => (
               <MaterialCommunityIcons
@@ -84,7 +87,7 @@ const MyTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Account',
+          tabBarLabel: t('navigate:account'),
           tabBarColor: '#FF4500',
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />

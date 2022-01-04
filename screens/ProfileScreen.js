@@ -11,9 +11,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getAPI} from '../services/http-delegate.service';
+import Ionicons from 'react-native-vector-icons/dist/Ionicons';
+import Selector from './LanguageSelector';
+import { useTranslation } from 'react-i18next';
+
 
 const ProfileScreen = props => {
   const [user, userData] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function getSaved() {
@@ -118,11 +123,11 @@ const ProfileScreen = props => {
               },
             ]}>
             <Title>₹ {user.wallet}</Title>
-            <Caption>Wallet</Caption>
+            <Caption>{t('profile:wallet')}</Caption>
           </View>
           <View style={styles.infoBox}>
             <Title>12</Title>
-            <Caption>Uploads</Caption>
+            <Caption>{t('profile:uploads')}</Caption>
           </View>
         </View>
 
@@ -142,7 +147,7 @@ const ProfileScreen = props => {
           <TouchableRipple onPress={() => {}}>
             <View style={styles.menuItem}>
               <FontAwesome5 name="whatsapp" size={25} color="#FF6347" />
-              <Text style={styles.menuItemText}>WhatsApp status saver</Text>
+              <Text style={styles.menuItemText}>{t('profile:whatsappStatusSaver')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple>
@@ -155,38 +160,44 @@ const ProfileScreen = props => {
               <Text style={styles.menuItemText}>My Ad Campaign</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => props.navigation.navigate('PremiumScreen')}>
             <View style={styles.menuItem}>
               <MaterialCommunityIcons
                 name="account-star"
                 size={24}
                 color="#FF6347"
               />
-              <Text style={styles.menuItemText}>Premium User</Text>
+              <Text style={styles.menuItemText}>{t('profile:premiumUser')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple onPress={() => {}}>
             <View style={styles.menuItem}>
               <Icon name="credit-card" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>Payment</Text>
+              <Text style={styles.menuItemText}>{t('profile:payment')}</Text>
+            </View>
+          </TouchableRipple>
+          <TouchableRipple onPress={() => {props.navigation.navigate("LangSetting")}}>
+            <View style={styles.menuItem}>
+              <Ionicons color='#FF6347' size={28} name='ios-language-outline' />
+              <Text style={styles.menuItemText}>{t('profile:changeLang')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple onPress={myCustomShare}>
             <View style={styles.menuItem}>
               <Icon name="share-outline" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>Refer your Friends</Text>
+              <Text style={styles.menuItemText}>{t('profile:share')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple onPress={() => {}}>
             <View style={styles.menuItem}>
               <Icon name="account-check-outline" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>Contact Us</Text>
+              <Text style={styles.menuItemText}>{t('profile:contactUs')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => props.navigation.navigate('FAQ')}>
             <View style={styles.menuItem}>
               <Icon name="phone-settings-outline" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>FAQ & Terms and condition</Text>
+              <Text style={styles.menuItemText}>FAQ</Text>
             </View>
           </TouchableRipple>
         </View>
