@@ -14,6 +14,7 @@ import {getAPI} from '../services/http-delegate.service';
 import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import Selector from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
+import { TouchableOpacity } from 'react-native';
 
 
 const ProfileScreen = props => {
@@ -114,17 +115,21 @@ const ProfileScreen = props => {
         </View>
 
         <View style={styles.infoBoxWrapper}>
-          <View
+          <TouchableOpacity
             style={[
               styles.infoBox,
               {
                 borderRightColor: '#dddddd',
                 borderRightWidth: 1,
               },
-            ]}>
+            ]}
+            onPress = {()=> props.navigation.navigate('Wallet',  {
+              wallet: user.wallet ,
+            })}
+            >
             <Title>₹ {user.wallet}</Title>
             <Caption>{t('profile:wallet')}</Caption>
-          </View>
+          </TouchableOpacity>
           <View style={styles.infoBox}>
             <Title>12</Title>
             <Caption>{t('profile:uploads')}</Caption>
@@ -132,26 +137,26 @@ const ProfileScreen = props => {
         </View>
 
         <View style={styles.menuWrapper}>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Icon name="heart-outline" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>Your Favorites</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <FontAwesome5 name="history" size={24} color="#FF6347" />
               <Text style={styles.menuItemText}>My History</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <FontAwesome5 name="whatsapp" size={25} color="#FF6347" />
               <Text style={styles.menuItemText}>{t('profile:whatsappStatusSaver')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple
-            onPress={() => props.navigation.navigate('AdCampaign')}>
+            onPress={() => props.navigation.navigate('AdCampaign')} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <MaterialCommunityIcons
                 name="caps-lock"
@@ -161,7 +166,7 @@ const ProfileScreen = props => {
               <Text style={styles.menuItemText}>My Ad Campaign</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => props.navigation.navigate('PremiumScreen')}>
+          <TouchableRipple onPress={() => props.navigation.navigate('PremiumScreen')} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <MaterialCommunityIcons
                 name="account-star"
@@ -171,34 +176,46 @@ const ProfileScreen = props => {
               <Text style={styles.menuItemText}>{t('profile:premiumUser')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Icon name="credit-card" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>{t('profile:payment')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {props.navigation.navigate("LangSetting")}}>
+          <TouchableRipple onPress={() => {props.navigation.navigate("LangSetting")}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Ionicons color='#FF6347' size={28} name='ios-language-outline' />
               <Text style={styles.menuItemText}>{t('profile:changeLang')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={myCustomShare}>
+          <TouchableRipple onPress={myCustomShare} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Icon name="share-outline" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>{t('profile:share')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}}>
+          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Icon name="account-check-outline" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>{t('profile:contactUs')}</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => props.navigation.navigate('FAQ')}>
+          <TouchableRipple onPress={() => props.navigation.navigate('FAQ')} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <Icon name="phone-settings-outline" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>FAQ</Text>
+            </View>
+          </TouchableRipple>
+          <TouchableRipple onPress={() => props.navigation.navigate('TermsAndCond')} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
+            <View style={styles.menuItem}>
+              <MaterialCommunityIcons name="file-document" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>Terms And Conditions</Text>
+            </View>
+          </TouchableRipple>
+          <TouchableRipple onPress={() => {props.navigation.navigate('Privacy Policy')}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
+            <View style={styles.menuItem}>
+              <MaterialCommunityIcons name="file-key" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>Privacy Policy</Text>
             </View>
           </TouchableRipple>
         </View>

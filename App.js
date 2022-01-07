@@ -11,6 +11,9 @@ import Selector from './screens/LanguageSelector';
 import FAQ from './screens/Faq';
 import PremiumScreen from './screens/PremiumScreen';
 import AdCampaign from './screens/AdCampaign';
+import Wallet from './screens/Wallet';
+import TAndC from './screens/T&C';
+import PrivacyPolicy from './screens/PrivacyPolicy';
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -25,6 +28,9 @@ const StackNavigator = () => (
     <Screen name='FAQ' component={FAQ} />
     <Screen name='PremiumScreen' component={PremiumScreen} />
     <Screen name="AdCampaign" component={AdCampaign} />
+    <Screen name='Wallet' component={Wallet}/>
+    <Screen name='Privacy Policy' component={PrivacyPolicy} />  
+    <Screen name="TermsAndCond" component={TAndC} />
   </Navigator>
 );
 class App extends Component {
