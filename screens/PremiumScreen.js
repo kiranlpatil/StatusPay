@@ -3,8 +3,34 @@ import { StyleSheet, Text,SafeAreaView,Image, TouchableOpacity,buttonRef } from 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native';
+import RNPgReactNativeSDK from 'react-native-pg-react-native-sdk';
 
 const PremiumScreen = (props) => {
+    const handlePurchase =() => {
+        console.log('HandlePurchaseClicked')
+        // let env = 'TEST'
+        // let map = {
+        //     "orderId": '1312',
+        //     "orderAmount": "1",
+        //     "appId": "",
+        //     "tokenData": "Jb9JCN4MzUIJiOicGbhJCLiQ1VKJiOiAXe0Jye.CJ9JCMykjNkdDO4EGZkFjNiojI0xWYz9lIsETN1gDM1QDN2EjOiAHelJCLiEjI6ICduV3btFkclRmcvJCLiIlTJJiOik3YuVmcyV3QyVGZy9mIsIiMxMTMiojIklkclRmcvJye.TfuB5GH5_I72xZ4DXTwPuRG-vYl0XDC7WS-0fk23OCdqUx4oDPsOtWzMfruGB_iMGc",
+        //     "orderCurrency": "INR",
+        //     "orderNote": "asdasdasd",
+        //     "notifyUrl": "https://test.gocashfree.com/notify",
+        //     "verifyExpiry": "100",
+        //     "customerName": "Cashfree User",
+        //     "customerPhone": "9999999999",
+        //     "customerEmail": "cashfree@cashfree.com"
+        //     }
+
+        // RNPgReactNativeSDK.startPaymentUPI(map, env, (result) => {
+        //         console.log(result);
+        //         var obj = JSON.parse(result, function (key, value) {
+        //             console.log(key + "::" + value);
+        //             // Do something with the result
+        //         })
+        // });
+    }
     return (
         <SafeAreaView style={styles.container}>
             <Image source={require('../assets/blur2.jpg')} style={styles.background}/>
@@ -21,6 +47,7 @@ const PremiumScreen = (props) => {
                     </View>
                     <TouchableOpacity
                             style={styles.enabledVerifyToggle}
+                            onPress={()=>handlePurchase()}
                             ref={buttonRef}>
                             <Text style={styles.verifyText}>Purchase</Text>
                     </TouchableOpacity>

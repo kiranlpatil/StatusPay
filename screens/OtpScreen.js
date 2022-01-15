@@ -98,9 +98,7 @@ class OtpScreen extends Component {
           .then(result => {
             console.log(result);
             if (result.status === 'Success') {
-              this.setData(result).then(() => {
-                this.state.navigation.navigate('Dashboard');
-              });
+              this.setData(result)
             } else {
               this.state.navigation.navigate('Signup Page', {
                 mobile: this.props.route.params.mobile,
@@ -121,21 +119,12 @@ class OtpScreen extends Component {
     let body = { "Mobile Number": this.props.route.params.mobile.toString() };
     console.log(body)
     httpDelegateService("https://statuspe.herokuapp.com/auth/token",body)
-    .then(async (res)=>{
+    .then((res)=>{
       try {
-        await EncryptedStorage.setItem('token', res.token);
-        console.log("TokenSet")
-        let r = await JSON.parse(result.user)
-        console.log(r)
-        let uniIDFetch = await fetch(
-          `https://statuspe.herokuapp.com//user/genuserid?mobile=${JSON.parse(result.user).mobile}`
-        );
-        let uniId = await uniIDFetch.json(); 
-        await EncryptedStorage.setItem('userId', JSON.parse(result.user).user_id.toString());
-        await EncryptedStorage.setItem('district', JSON.parse(result.user).district);
-        await EncryptedStorage.setItem('state', JSON.parse(result.user).state);
-        await EncryptedStorage.setItem('user_mobile', JSON.parse(result.user).mobile.toString());
-        await EncryptedStorage.setItem('uniID', uniId.toString());
+          EncryptedStorage.setItem('token', res.token).then(()=>{
+            console.log("TokenSet In OTP SCREEN")
+            this.state.navigation.navigate('Dashboard');
+          })
       } catch (error) {
           console.log(error)
           Alert.alert('Access not granted', 'Give Permission to access storage')

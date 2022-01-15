@@ -17,6 +17,7 @@ import {useEffect, useRef, useState} from 'react';
 import httpDelegateService from '../services/http-delegate.service';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {launchImageLibrary} from 'react-native-image-picker';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 // import * as ImagePicker from 'expo-image-picker';
 // import * as MediaLibrary from 'expo-media-library';
@@ -83,7 +84,45 @@ export default function HomeScreen() {
       });
     }
     getSaved().then();
+    setData()
   }, []);
+
+  
+  const setData = async () => {
+    try {
+      const res = await EncryptedStorage.getItem("token")
+      console.log(res,"TOKEN RES Home Screen")
+      if (res) {
+          let Token = {"Token": res};
+          httpDelegateService('https://statuspe.herokuapp.com/auth/decode_token',Token)
+              .then(async (r) => {
+                  if (r.state){
+                      let res = await fetch(
+                          `https://statuspe.herokuapp.com//user/genuserid?mobile=${r.user_mobile}`
+                        );
+                      let uniId = await res.json();
+                      await EncryptedStorage.setItem('user_mobile', r.user_mobile);
+                      await EncryptedStorage.setItem('district', r.district);
+                      await EncryptedStorage.setItem('state', r.state);
+                      await EncryptedStorage.setItem('uniId', uniId);
+                      if (r.isAdmin && isAdmin == true){
+                          await EncryptedStorage.setItem('isAdmin', true);
+                      }
+                      const session = await EncryptedStorage.getItem("user_mobile");
+                      console.log('DATA SET',session)
+                  }else{
+                      console.log(r)
+                      return
+                  }
+              })
+        }else{
+            return
+         }
+    } catch (error) {
+        console.log(error)
+        Alert.alert('Access not granted', 'Give Permission to access storage')
+    }
+  }
 
   function Post({post}) {
     return (
