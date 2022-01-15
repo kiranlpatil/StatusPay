@@ -14,8 +14,6 @@
          eg: for a custom share UI
     -->
       <intent>
-        <action android:name="android.intent.action.VIEW" />
-        <data android:scheme="upi" android:host="pay"/>
         <action android:name="android.intent.action.SEND" />
         <data android:mimeType="image/jpeg" />
       </intent>

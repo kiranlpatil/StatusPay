@@ -29,7 +29,6 @@
     "react-native-modal": "^2.4.0",
     "react-native-otp-verify": "^1.0.4",
     "react-native-paper": "^4.11.1",
-    "react-native-pg-react-native-sdk": "^2.1.7",
     "react-native-picker-select": "^8.0.4",
     "react-native-popup-menu": "^0.15.11",
     "react-native-reanimated": "^2.2.4",
