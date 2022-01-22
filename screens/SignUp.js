@@ -11,6 +11,7 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import Data from "../Data/states&cities.json";
 import httpDelegateService from "../services/http-delegate.service";
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const SignUp = (props) => {
   const [name, setName] = useState("");
@@ -22,8 +23,8 @@ const SignUp = (props) => {
   const [isValidDist, setIsValidDist] = useState(true);
   const [isValidState, setIsValidState] = useState(true);
   const [distData, setDistData] = useState([]);
-//   let mobile = props.route.params.mobile;
-  let mobile = 9991234846;
+  let mobile = props.route.params.mobile;
+  // let mobile = 9991234846;
 
   // FETCH Cities DATA
   const getCities = (state) => {
@@ -82,9 +83,9 @@ const SignUp = (props) => {
     httpDelegateService("https://statuspe.herokuapp.com//user/register-user", data).then(
       (r) => {
         if (r.status == "Success") {
-            setData(result).then(() => {
-                state.navigation.navigate('Dashboard');
-            });
+            setData(r)
+        }else{
+          console.log(r)
         }
       }
     );
@@ -95,13 +96,12 @@ const SignUp = (props) => {
       let body = { "Mobile Number": mobile.toString()};
       console.log(body)
       httpDelegateService("https://statuspe.herokuapp.com/auth/token",body)
-      .then(async (res)=>{
+      .then((res)=>{
         try {
-          await SecureStorage.setItemAsync('token', res.token);
-          console.log("TokenSet")
-          // await AsyncStorage.setItem('userId', JSON.parse(result.user).user_id);
-          // await AsyncStorage.setItem('district', JSON.parse(result.user).district);
-          // await AsyncStorage.setItem('state', JSON.parse(result.user).state);
+          EncryptedStorage.setItem('token', res.token).then(()=>{
+            console.log("TokenSet In SignUp SCREEN")
+            props.navigation.navigate('Dashboard');
+          })
         } catch (error) {
             console.log(error)
             Alert.alert('Access not granted', 'Give Permission to access storage')

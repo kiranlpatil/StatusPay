@@ -18,6 +18,13 @@
       <data android:mimeType="image/jpeg" />
     </intent>
   </queries>
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="upi" android:host="pay"/>
+    </intent>
+    <package android:name="com.android.chrome" />
+  </queries>
 
 
     <application

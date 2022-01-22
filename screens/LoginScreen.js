@@ -19,6 +19,7 @@ class LoginScreen extends Component {
     this.state = {
       value: '',
       navigation: props.navigation,
+      isLoading: true
     };
   }
 
@@ -58,6 +59,7 @@ class LoginScreen extends Component {
           mobile: this.state.value,
           otp: result,
         });
+        this.setState({isLoading:true})
       });
       // console.log(Device.osInternalBuildId);
       // console.log(Device.osBuildFingerprint);
@@ -70,6 +72,7 @@ class LoginScreen extends Component {
     this.getData()
   }
 
+
   getData = async () => {
     console.log("GET DATA RUN")
     try {
@@ -78,21 +81,9 @@ class LoginScreen extends Component {
         console.log(res,"TOKEN RES")
         if (res) {
             let Token = {"Token": res};
-            console.log(res)
             httpDelegateService('https://statuspe.herokuapp.com/auth/decode_token',Token)
                 .then(async (r) => {
                     if (r.state){
-                        let res = await fetch(
-                            `https://statuspe.herokuapp.com//user/genuserid?mobile=${r.user_mobile}`
-                          );
-                        let uniId = await res.json();
-                        await EncryptedStorage.setItem('user_mobile', r.user_mobile);
-                        await EncryptedStorage.setItem('district', r.district);
-                        await EncryptedStorage.setItem('state', r.state);
-                        await EncryptedStorage.setItem('uniId', uniId);
-                        if (r.isAdmin && isAdmin == true){
-                            await EncryptedStorage.setItem('isAdmin', true);
-                        }
                         this.state.navigation.navigate('Dashboard');
                     }else{
                         console.log(r)
@@ -106,6 +97,7 @@ class LoginScreen extends Component {
         }
     } catch (error) {
         console.log(error)
+        this.setState({isLoading:false})
         Alert.alert('Access not granted', 'Give Permission to access storage')
     }
 };
@@ -113,7 +105,12 @@ class LoginScreen extends Component {
   render() {
     const {value} = this.state;
     return (
-      <SafeAreaView style={styles.container}>
+        this.state.isLoading ? 
+        <SafeAreaView style={styles.container}>
+            <Image source={require('../assets/logo.png')} style={{width:"100%",height:"100%"}}/>
+        </SafeAreaView>
+        :
+        <SafeAreaView style={styles.container}>
         <Image
           source={require('../assets/blur2.jpg')}
           style={styles.background}
@@ -220,6 +217,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 15,
     textAlign: 'center',
+    alignItems:'center',
     shadowColor: '#6e6969',
     shadowOffset: {
       width: 3,
@@ -280,7 +278,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontWeight: 'bold',
     fontSize: 20,
-    padding: 0,
     textAlign: 'center',
     color: '#6e6969',
   },
