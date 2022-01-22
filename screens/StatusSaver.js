@@ -2,8 +2,37 @@ import React, { useEffect } from 'react'
 import { Platform } from 'react-native';
 import { StyleSheet, Text,SafeAreaView,Image, TouchableOpacity,buttonRef,View,PermissionsAndroid } from 'react-native';
 import RNFS from 'react-native-fs';
+import {NativeModules} from 'react-native';
+const RNFetchBlob = NativeModules.RNFetchBlob
 
 const StatusSaver = () => {
+    const moveAll = async (path, outputPath) => {
+      // is a folder
+      if (path.split(".").length == 1) {
+        // CHeck if folder already exists
+        let exists = await RNFS.exists(outputPath);
+        if (exists) {
+          await RNFS.unlink(outputPath);
+          await RNFS.mkdir(outputPath);
+        }
+        // MAKE FRESH FOLDER
+        let result = await RNFS.readDir(path);
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].isDirectory()) {
+            await RNFS.mkdir(outputPath + "/" + result[i].name);
+          }
+          let val = await moveAll(result[i].path, outputPath + "/" + result[i].name);
+        }
+        await RNFS.unlink(path);
+        return 1;
+      } else {
+        await RNFS.moveFile(path, outputPath);
+        return 1;
+      }
+    }
+
+
+
     const fetchStatuses = async () => {
         if (Platform.OS === "android") {
             console.log("os : ANdroid");
@@ -22,10 +51,19 @@ const StatusSaver = () => {
               );
               console.log(granted);
               if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                let originPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`;
+                let outputPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
                 console.log("Location permission allowed");
-                console.log("RUNNNNNNNNNNNNNNNNNNNNNNNn")
-                RNFS.readDir(`${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`).then(res => {
-                    console.log(res)
+                RNFS.exists(originPath).then((success) => {
+                //   console.log('File Exists!'); // <--- here RNFS can read the file and returns this
+                //   RNFS.copyFile(originPath, outputPath)
+                //     .then(result => {
+                //       console.log('file copied:', result);
+                //     })
+                //     .catch(err => {
+                //       console.log(err);
+                //     });
+                  moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => console.log('almost'))
                 })
               } else {
                 console.log("Location permission denied");

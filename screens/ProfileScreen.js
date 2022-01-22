@@ -149,7 +149,8 @@ const ProfileScreen = props => {
               <Text style={styles.menuItemText}>My History</Text>
             </View>
           </TouchableRipple>
-          <TouchableRipple onPress={() => {}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
+          <TouchableRipple onPress={() => {props.navigation.navigate('Status Saver')}}
+                           style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>
             <View style={styles.menuItem}>
               <FontAwesome5 name="whatsapp" size={25} color="#FF6347" />
               <Text style={styles.menuItemText}>{t('profile:whatsappStatusSaver')}</Text>

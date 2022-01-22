@@ -14,22 +14,26 @@ import AdCampaign from './screens/AdCampaign';
 import Wallet from './screens/Wallet';
 import TAndC from './screens/T&C';
 import PrivacyPolicy from './screens/PrivacyPolicy';
+import UserUploadScreen from "./screens/UserUploadScreen";
+import SwipeUnlock from "./screens/SplashScreen";
 
 const {Navigator, Screen} = createStackNavigator();
 
 const StackNavigator = () => (
   <Navigator screenOptions={{headerShown: false}}>
-  {/* <Screen name="Status Saver" component={StatusSaver} /> */}
-    <Screen name="Login" component={LoginScreen} />
-    <Screen name="OtpVerify" component={OtpScreen} />
-    <Screen name="Signup Page" component={SignUp} />
+    <Screen name="splash" component={SwipeUnlock} />
+  {/*  <Screen name="Login" component={LoginScreen} />*/}
+  {/*  <Screen name="OtpVerify" component={OtpScreen} />*/}
+  {/*  <Screen name="Signup Page" component={SignUp} />*/}
     <Screen name="Dashboard" component={DashboardScreen} />
     <Screen name='LangSetting' component={Selector} />
     <Screen name='FAQ' component={FAQ} />
     <Screen name='PremiumScreen' component={PremiumScreen} />
     <Screen name="AdCampaign" component={AdCampaign} />
     <Screen name='Wallet' component={Wallet}/>
-    <Screen name='Privacy Policy' component={PrivacyPolicy} />  
+    <Screen name="UserUploadScreen" component={UserUploadScreen} />
+    <Screen name="Status Saver" component={StatusSaver} />
+    <Screen name='Privacy Policy' component={PrivacyPolicy} />
     <Screen name="TermsAndCond" component={TAndC} />
   </Navigator>
 );
