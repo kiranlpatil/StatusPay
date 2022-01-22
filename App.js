@@ -5,44 +5,28 @@ import RNFetchBlob from 'rn-fetch-blob';
 const fs = RNFetchBlob.fs;
 let imagePath = null;
 
-const share = () => {
-  const shareOptions = {
-    title: 'Share via',
-    message: 'Image Shared',
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png',
-    social: Share.Social.WHATSAPP,
-    whatsAppNumber: '9199999999',
-    filename:
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-  };
-  RNFetchBlob.config({
-    fileCache: true,
-  })
-    .fetch(
-      'GET',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png',
-    )
-    // the image is now dowloaded to device's storage
-    .then(resp => {
-      // the image path you can use it directly with Image component
-      imagePath = resp.path();
-      console.log('image - ', imagePath);
-      return resp.readFile('base64');
-    })
-    .then(base64Data => {
-      // here's base64 encoded image
-      console.log('hi kiran');
-      shareOptions.filename = base64Data;
-      Share.shareSingle(shareOptions)
-        .then(res => {
-          console.log(res);
+const onShare =  async () => {
+      RNFetchBlob.fetch('GET', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png')
+        .then((resp) => {
+          let base64image = resp.data;
+          share('data:image/png;base64,' + base64image);
         })
-        .catch(err => {
-          err && console.log(err);
-        });
-      // remove the file from storage
-      return fs.unlink(imagePath);
-    });
+        .catch((err) => share());
+}
+
+const share = (base64image) => {
+    let shareOptions = {
+      title: 'Title',
+      url: base64image,
+      message: "Hello This is StatusPe" ,
+      social: Share.Social.WHATSAPP,
+      subject: "Subject"
+    }
+    Share.shareSingle(shareOptions)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {});
 };
 
 const App = () => {
@@ -57,15 +41,9 @@ const App = () => {
           padding: 10,
           borderRadius: 20,
         }}
-        onPress={() => share()}>
+        onPress={() => onShare()}>
         <Text>Send </Text>
       </TouchableOpacity>
-      <Image
-        style={{height: 50, width: 50}}
-        source={{
-          uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-        }}
-      />
     </SafeAreaView>
   );
 };
