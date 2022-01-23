@@ -19,6 +19,7 @@
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.0.5",
     "@react-navigation/stack": "^6.0.11",
+    "@sentry/react-native": "^3.2.13",
     "accordion-collapse-react-native": "^1.1.0",
     "i18n": "^0.13.4",
     "i18next": "^21.6.6",

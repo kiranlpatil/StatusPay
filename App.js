@@ -16,6 +16,7 @@ import TAndC from './screens/T&C';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import UserUploadScreen from "./screens/UserUploadScreen";
 import SwipeUnlock from "./screens/SplashScreen";
+import * as Sentry from "@sentry/react-native";
 
 const {Navigator, Screen} = createStackNavigator();
 
@@ -39,6 +40,10 @@ const StackNavigator = () => (
 );
 class App extends Component {
   render() {
+    Sentry.init({
+      dsn: "https://41bfc3b03f6b41fa94457ed650926f2f@o1123875.ingest.sentry.io/6162074",
+      tracesSampleRate: 1.0,
+    });
     return (
       <NavigationContainer>
         <StackNavigator />
