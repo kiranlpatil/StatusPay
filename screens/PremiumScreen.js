@@ -1,37 +1,112 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import { StyleSheet, Text,SafeAreaView,Image, TouchableOpacity,buttonRef } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { View } from 'react-native';
 import { ScrollView } from 'react-native';
 import RNPgReactNativeSDK from 'react-native-pg-react-native-sdk';
+import LottieView from 'lottie-react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import { Alert } from 'react-native';
+import httpDelegateService from "../services/http-delegate.service";
+
+
 
 const PremiumScreen = (props) => {
-    const handlePurchase =() => {
-        console.log('HandlePurchaseClicked')
-        // let env = 'TEST'
-        // let map = {
-        //     "orderId": '1312',
-        //     "orderAmount": "1",
-        //     "appId": "",
-        //     "tokenData": "Jb9JCN4MzUIJiOicGbhJCLiQ1VKJiOiAXe0Jye.CJ9JCMykjNkdDO4EGZkFjNiojI0xWYz9lIsETN1gDM1QDN2EjOiAHelJCLiEjI6ICduV3btFkclRmcvJCLiIlTJJiOik3YuVmcyV3QyVGZy9mIsIiMxMTMiojIklkclRmcvJye.TfuB5GH5_I72xZ4DXTwPuRG-vYl0XDC7WS-0fk23OCdqUx4oDPsOtWzMfruGB_iMGc",
-        //     "orderCurrency": "INR",
-        //     "orderNote": "asdasdasd",
-        //     "notifyUrl": "https://test.gocashfree.com/notify",
-        //     "verifyExpiry": "100",
-        //     "customerName": "Cashfree User",
-        //     "customerPhone": "9999999999",
-        //     "customerEmail": "cashfree@cashfree.com"
-        //     }
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [animationPath, setAnimationPath] = useState(require("../assets/success.json"))
+    const [userNumber, setUserNumber] = useState('')
+    const [userId, setUserId] = useState('')
+    const amount = "100"
 
-        // RNPgReactNativeSDK.startPaymentUPI(map, env, (result) => {
-        //         console.log(result);
-        //         var obj = JSON.parse(result, function (key, value) {
-        //             console.log(key + "::" + value);
-        //             // Do something with the result
-        //         })
-        // });
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        let number = await EncryptedStorage.getItem('user_mobile');
+        let id = await EncryptedStorage.getItem('uniId');
+        if (number && id){
+            setUserNumber(number)
+            setUserId(id)
+        }else{
+            Alert.alert('Unable To Fetch Data From Storage')
+        }
     }
+
+
+    const handlePurchase = () => {
+        console.log('HandlePurchaseClicked')
+        let body = {
+            "user_id": userId,
+            "user_email": "abc@gmail.com",
+            'user_phone': userNumber,
+            "amount": amount
+        }
+        httpDelegateService("https://statuspe.herokuapp.com/Payments/payment",body)
+        .then((res)=>{
+            try {
+                if (res.status == "OK"){
+                    initializePayment(res.cftoken,res.order_id)
+                }
+            } catch (error) {
+                console.log(error)
+                Alert.alert('Server Down')
+            }
+        })
+    }
+
+    const initializePayment = (token,orderId) => {
+        let env = 'TEST'
+        let map = {
+            "orderId": orderId,
+            "orderAmount": amount,
+            "appId": "117381a6a858db677363736dad183711",
+            "tokenData": token,
+            "orderCurrency": "INR",
+            "orderNote": "Premium Payment",
+            "notifyUrl": "https://test.gocashfree.com/notify",
+            "verifyExpiry": "100",
+            "customerPhone": userNumber,
+            "customerEmail": "cashfree@cashfree.com"
+            }
+
+        RNPgReactNativeSDK.startPaymentUPI(map, env, (result) => {
+                try {
+                    let res = JSON.parse(result)
+                    console.log(res)
+                    if (res.txStatus != 'FAILED'){
+                        console.log("Payment Success")
+                        setIsSuccess(true)
+                        setAnimationPath(require("../assets/success.json"))
+                        setTimeout(() => {
+                            props.navigation.goBack()
+                        }, 2500);
+                    } else{
+                        console.log("PAYMENT FAILED")
+                        setIsSuccess(true)
+                        setAnimationPath(require("../assets/failed.json"))
+                        setTimeout(() => {
+                            props.navigation.goBack()
+                        }, 2500);
+                    }  
+                  } catch (error) {
+                    console.log(error,"CATCH BLOCK")
+                    setIsSuccess(true)
+                    setAnimationPath(require("../assets/failed.json"))
+                    setTimeout(() => {
+                        props.navigation.goBack()
+                    }, 2500);
+                  }
+        });
+    }
+
+
     return (
+        isSuccess ?
+        <SafeAreaView style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <LottieView source={animationPath} autoPlay loop={false}/>
+        </SafeAreaView>
+        :
         <SafeAreaView style={styles.container}>
             <Image source={require('../assets/blur2.jpg')} style={styles.background}/>
             <MaterialCommunityIcons name="keyboard-backspace" color={"#000"} size={26} onPress={()=>props.navigation.navigate('Dashboard')} />

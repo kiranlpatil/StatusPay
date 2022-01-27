@@ -24,6 +24,10 @@ import Slider from '@react-native-community/slider';
 import Modal from 'react-native-modal'; // 2.4.0
 import httpDelegateService, {getAPI} from '../services/http-delegate.service';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import RNPgReactNativeSDK from 'react-native-pg-react-native-sdk';
+import LottieView from 'lottie-react-native';
+
 let cities = require('../Data/states&cities.json');
 
 const height = StatusBar.currentHeight;
@@ -231,6 +235,8 @@ const PageFirst = ({firstData}) => {
         <TextInput
           style={styles.text}
           value={name}
+          placeholder="Enter Name"
+          placeholderTextColor='lightgrey'
           onChangeText={value => setName(value)}
         />
       </View>
@@ -239,13 +245,14 @@ const PageFirst = ({firstData}) => {
         <TextInput
           style={styles.text}
           placeholder="(optional)"
+          placeholderTextColor='lightgrey'
           multiline={true}
         />
       </View>
       <View
         style={
           (styles.textInputBox,
-          {justifyContent: 'space-between', flexDirection: 'row', padding: 5})
+          {justifyContent: 'space-between', flexDirection: 'row', paddingRight: 5,alignItems:'center'})
         }>
         <Text style={styles.startTextBox}>{'Mobile* : '}</Text>
 
@@ -253,7 +260,8 @@ const PageFirst = ({firstData}) => {
           style={{
             backgroundColor: 'lightblue',
             borderRadius: 20,
-            padding: 4,
+            padding: 15,
+            marginLeft:10,
             width: '80%',
             elevation: 4,
             alignItems: 'center',
@@ -261,8 +269,8 @@ const PageFirst = ({firstData}) => {
           onPress={() => {
             showVerifyNoModal('true');
           }}
-          disabled={verified}>
-          <Text style={{fontWeight: '700'}}>
+          disabled={verified}>  
+          <Text style={{fontWeight: '700', color:'grey'}}>
             {verified ? 'Verified' : 'Add & Verify'}
           </Text>
         </TouchableOpacity>
@@ -284,11 +292,11 @@ const PageFirst = ({firstData}) => {
       </View>
       <View style={styles.textInputBox}>
         <Text style={styles.startTextBox}>{'Email: '}</Text>
-        <TextInput style={styles.text} placeholder=" (optional)" />
+        <TextInput style={styles.text} placeholder=" (optional)" placeholderTextColor='lightgrey' />
       </View>
       <View style={styles.textInputBox}>
         <Text style={styles.startTextBox}>{'Address: '}</Text>
-        <TextInput style={styles.text} placeholder=" (optional)" />
+        <TextInput style={styles.text} placeholder=" (optional)" placeholderTextColor='lightgrey' />
       </View>
       <View
         style={
@@ -337,7 +345,7 @@ const PageSecond = () => {
     <View style={{width: '80%', height: SCREEN_HEIGHT, alignItems: 'center'}}>
       <View style={{marginTop: 5, width: '100%'}}>
         <View style={{paddingVertical: 5, paddingTop: 20}} />
-        <Text style={{padding: 10}}>Where you want to show your Ads</Text>
+        <Text style={{padding: 10,color:'grey'}}>Where you want to show your Ads</Text>
         <RNPickerSelect
           items={[
             {
@@ -360,12 +368,12 @@ const PageSecond = () => {
           value={value}
         />
         <View style={{paddingVertical: 5}} />
-        <View style={{paddingVertical: 5, paddingTop: 20}} />
+        <View style={{paddingVertical: 5, paddingTop: 20,color:'grey'}} />
         {value === 'Country level' ||
         value === 'State level' ||
         value === 'District level' ? (
           <View>
-            <Text style={{padding: 10}}>
+            <Text style={{padding: 10,color:'grey'}}>
               In which country you want to show your ads
             </Text>
             <RNPickerSelect
@@ -385,7 +393,7 @@ const PageSecond = () => {
 
             {value === 'State level' || value === 'District level' ? (
               <View>
-                <Text style={{padding: 10}}>
+                <Text style={{padding: 10,color:'grey'}}>
                   In which state you want to show your ads
                 </Text>
                 <RNPickerSelect
@@ -397,14 +405,14 @@ const PageSecond = () => {
                   }))}
                   onValueChange={value => {
                     setState(value);
-                  }}
+                  }} 
                   style={{...pickerSelectStyles}}
                   value={state}
                 />
                 <View style={{paddingVertical: 5}} />
                 {value === 'District level' ? (
                   <View>
-                    <Text style={{padding: 10}}>
+                    <Text style={{padding: 10,color:'grey'}}>
                       In which district you want to show your ads
                     </Text>
                     <RNPickerSelect
@@ -494,9 +502,9 @@ const PageThird = () => {
         </RadioButton.Group>
       </View>
       {radioValue === 'Public' ? (
-        <Text style={{fontSize: 15, fontWeight: '800'}}>Public Selected</Text>
+        <Text style={{fontSize: 15, fontWeight: '800',color:'#0c0c0c'}}>Public Selected</Text>
       ) : (
-        <Text style={{fontSize: 15, fontWeight: '800'}}>Private Selected</Text>
+        <Text style={{fontSize: 15, fontWeight: '800',color:'#0c0c0c'}}>Private Selected</Text>
       )}
     </View>
   );
@@ -508,6 +516,93 @@ const PageFourth = () => {
   const actualReach = range * 5;
   const fromReach = roundValue(actualReach - 0.2 * actualReach);
   const toReach = roundValue(actualReach + 0.2 * actualReach);
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [animationPath, setAnimationPath] = useState(require("../assets/success.json"))
+  const [userNumber, setUserNumber] = useState('')
+  const [userId, setUserId] = useState('')
+
+  useEffect(() => {
+      getData()
+  }, [])
+
+  const getData = async () => {
+      let number = await EncryptedStorage.getItem('user_mobile');
+      let id = await EncryptedStorage.getItem('uniId');
+      if (number && id){
+          setUserNumber(number)
+          setUserId(id)
+          console.log('DATA SET')
+      }else{
+          Alert.alert('Unable To Fetch Data From Storage')
+      }
+  }
+
+
+  const handlePurchase = () => {
+      console.log('HandlePurchaseClicked')
+      let body = {
+          "user_id": userId,
+          "user_email": "abc@gmail.com",
+          'user_phone': userNumber,
+          "amount": range
+      }
+      httpDelegateService("https://statuspe.herokuapp.com/Payments/payment",body)
+      .then((res)=>{
+          try {
+              if (res.status == "OK"){
+                  initializePayment(res.cftoken,res.order_id)
+              }
+          } catch (error) {
+              console.log(error)
+              Alert.alert('Server Down')
+          }
+      })
+  }
+
+  const initializePayment = (token,orderId) => {
+      let env = 'TEST'
+      let map = {
+          "orderId": orderId,
+          "orderAmount": range.toString(),
+          "appId": "117381a6a858db677363736dad183711",
+          "tokenData": token,
+          "orderCurrency": "INR",
+          "orderNote": "Premium Payment",
+          "notifyUrl": "https://test.gocashfree.com/notify",
+          "verifyExpiry": "100",
+          "customerPhone": userNumber,
+          "customerEmail": "cashfree@cashfree.com"
+          }
+
+      RNPgReactNativeSDK.startPaymentUPI(map, env, (result) => {
+              try {
+                  let res = JSON.parse(result)
+                  console.log(res)
+                  if (res.txStatus != 'FAILED'){
+                      console.log("Payment Success")
+                      setIsSuccess(true)
+                      setAnimationPath(require("../assets/success.json"))
+                      setTimeout(() => {
+                          setIsSuccess(false)
+                      }, 2500);
+                  } else{
+                      console.log("PAYMENT FAILED")
+                      setIsSuccess(true)
+                      setAnimationPath(require("../assets/failed.json"))
+                      setTimeout(() => {
+                          setIsSuccess(false)
+                      }, 2500);
+                  }  
+                } catch (error) {
+                  console.log(error,"CATCH BLOCK")
+                  setIsSuccess(true)
+                  setAnimationPath(require("../assets/failed.json"))
+                  setTimeout(() => {
+                      setIsSuccess(false)
+                  }, 2500);
+                }
+      });
+  }
 
   function roundValue(reachValue) {
     const L = reachValue.toString().length;
@@ -524,6 +619,11 @@ const PageFourth = () => {
   }
 
   return (
+    isSuccess ?
+        <SafeAreaView style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <LottieView source={animationPath} autoPlay loop={false}/>
+        </SafeAreaView>
+    :
     <View
       style={{
         width: '90%',
@@ -539,6 +639,7 @@ const PageFourth = () => {
             paddingTop: 10,
             fontSize: 25,
             alignContent: 'center',
+            color:'grey'
           }}>
           {fromReach} - {toReach}
         </Text>
@@ -562,7 +663,7 @@ const PageFourth = () => {
           }}>
           Budget
         </Text>
-        <Text style={{fontSize: 20, fontWeight: 'bold', padding: 10}}>
+        <Text style={{fontSize: 20, fontWeight: 'bold', padding: 10,color:'grey'}}>
           ₹ {range}
         </Text>
         <Slider
@@ -577,6 +678,7 @@ const PageFourth = () => {
           onValueChange={value => setRange(parseInt(value))}
         />
         <TouchableOpacity
+          onPress={()=> handlePurchase()}
           style={{
             fontSize: 20,
             padding: 20,
@@ -840,12 +942,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textInputBox: {
+    color:'white',
     backgroundColor: 'azure',
     borderRadius: 14,
     flexDirection: 'row',
     width: SCREEN_WIDTH - 25,
     padding: 12,
     marginVertical: 15,
+    alignItems:'center',
     textAlign: 'center',
     shadowColor: '#6e6969',
     shadowOffset: {
@@ -939,6 +1043,7 @@ const styles = StyleSheet.create({
   modalText1: {
     marginBottom: 15,
     textAlign: 'center',
+    color:'#0c0c0c'
   },
   text1: {
     color: '#0c0c0c',

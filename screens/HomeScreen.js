@@ -112,6 +112,11 @@ export default function HomeScreen() {
                       console.log('DATA SET',session)
                   }else{
                       console.log(r)
+                      await EncryptedStorage.removeItem('user_mobile');
+                      await EncryptedStorage.removeItem('district');
+                      await EncryptedStorage.removeItem('state');
+                      await EncryptedStorage.removeItem('uniId');
+                      await EncryptedStorage.removeItem('isAdmin');
                       return
                   }
               })
