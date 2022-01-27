@@ -1,12 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React, {useRef, useEffect} from 'react';
+import React, { useRef, useEffect } from "react";
 import {
   SafeAreaView,
   Image,
@@ -15,9 +7,9 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
-} from 'react-native';
+} from "react-native";
 
-const SplashScreen = props => {
+const SwipeUnlock = (props) => {
   const moveAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -25,7 +17,7 @@ const SplashScreen = props => {
     Animated.sequence([
       Animated.timing(moveAnim, {
         duration: 2000,
-        toValue: Dimensions.get('window').width / 1.6,
+        toValue: Dimensions.get("window").width / 1.6,
         delay: 0,
         useNativeDriver: false,
       }),
@@ -41,41 +33,52 @@ const SplashScreen = props => {
       toValue: 1,
       delay: 2000,
       useNativeDriver: false,
+    }).start(() => {
+      props.navigation.navigate("Dashboard");
     });
   }, [moveAnim, fadeAnim]);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text>Hi</Text>
+        <Animated.Image
+          style={[styles.image, { opacity: fadeAnim }]}
+          source={require("../assets/logo.png")}
+        />
+        <Animated.View style={[styles.logoContainer, { marginLeft: moveAnim }]}>
+          <Text style={[styles.logoText]}>S</Text>
+          <Animated.Text style={[styles.logoText, { opacity: fadeAnim }]}>
+            tatusPe
+          </Animated.Text>
+        </Animated.View>
       </View>
     </SafeAreaView>
   );
 };
 
-export default SplashScreen;
+export default SwipeUnlock;
 
 export const styles = StyleSheet.create({
   container: {
-    display: 'flex',
+    display: "flex",
     flex: 1,
-    backgroundColor: '#00BFFF',
+    backgroundColor: "#00BFFF",
   },
   logoText: {
     fontSize: 35,
     marginTop: 20,
-    color: 'white',
-    fontWeight: '700',
+    color: "white",
+    fontWeight: "700",
   },
   contentContainer: {
-    top: '30%',
-    alignItems: 'center',
+    top: "30%",
+    alignItems: "center",
   },
   image: {
-    width: Dimensions.get('window').width / 2,
-    height: Dimensions.get('window').height / 4,
+    width: Dimensions.get("window").width / 2,
+    height: Dimensions.get("window").height / 4,
   },
   logoContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
 });

@@ -19,6 +19,7 @@
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.0.5",
     "@react-navigation/stack": "^6.0.11",
+    "@sentry/react-native": "^3.2.13",
     "accordion-collapse-react-native": "^1.1.0",
     "i18n": "^0.13.4",
     "i18next": "^21.6.6",
@@ -35,8 +36,8 @@
     "react-native-localize": "^2.1.7",
     "react-native-modal": "^2.4.0",
     "react-native-otp-verify": "^1.0.4",
-    "react-native-paper": "^4.11.1",
     "react-native-pg-react-native-sdk": "^2.1.7",
+    "react-native-paper": "^4.11.2",
     "react-native-picker-select": "^8.0.4",
     "react-native-popup-menu": "^0.15.11",
     "react-native-reanimated": "^2.2.4",
@@ -48,7 +49,8 @@
     "react-native-web": "~0.13.12",
     "react-navigation": "^4.4.4",
     "react-navigation-material-bottom-tabs": "^2.3.4",
-    "react-navigation-stack": "^2.10.4"
+    "react-navigation-stack": "^2.10.4",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "7.16.0",
