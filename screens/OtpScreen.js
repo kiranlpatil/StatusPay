@@ -417,6 +417,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     padding: '35%',
     alignItems: 'center',
+    color:'darkslategrey',
     fontSize: 25,
     fontWeight: 'bold',
     justifyContent: 'center',
@@ -440,6 +441,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   resendText: {
+    color:'dimgrey',
     fontFamily: 'Roboto',
     fontWeight: 'bold',
   },
@@ -496,8 +498,8 @@ const styles = StyleSheet.create({
   },
   verifyText: {
     fontSize: 18,
+    color:'white',
     fontWeight: 'bold',
-    color: 'white',
     textTransform: 'uppercase',
   },
 });

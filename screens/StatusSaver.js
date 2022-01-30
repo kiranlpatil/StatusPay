@@ -4,16 +4,24 @@ import { StyleSheet, Text,SafeAreaView,Image, TouchableOpacity,buttonRef,View,Pe
 import RNFS from 'react-native-fs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {NativeModules} from 'react-native';
+import Share from 'react-native-share';
+import { Alert } from 'react-native';
+import CameraRoll from "@react-native-community/cameraroll";
 const RNFetchBlob = NativeModules.RNFetchBlob
 
-const StatusSaver = () => {
+const StatusSaver = (props) => {
     const [disabledBtn, setDisabledBtn] = useState(false);
+    const [imageData, setimageData] = useState([])
+
     const moveAll = async (path, outputPath) => {
+      console.log("RUNNING",path.split("."))
       // is a folder
       if (path.split(".").length == 1) {
         // CHeck if folder already exists
+        console.log("YEDS")
         let exists = await RNFS.exists(outputPath);
         if (exists) {
+          console.log('folder exist')
           await RNFS.unlink(outputPath);
           await RNFS.mkdir(outputPath);
         }
@@ -31,7 +39,7 @@ const StatusSaver = () => {
         await RNFS.moveFile(path, outputPath);
         return 1;
       }
-    
+    }
     const fetchStatuses = async () => {
         if (Platform.OS === "android") {
             console.log("os : ANdroid");
@@ -51,57 +59,111 @@ const StatusSaver = () => {
               console.log(granted);
               if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 let originPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`;
+                let originPathBusiness = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/.Statuses`;
                 let outputPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
-                console.log("Location permission allowed");
                 RNFS.exists(originPath).then((success) => {
-                //   console.log('File Exists!'); // <--- here RNFS can read the file and returns this
-                //   RNFS.copyFile(originPath, outputPath)
-                //     .then(result => {
-                //       console.log('file copied:', result);
-                //     })
-                //     .catch(err => {
-                //       console.log(err);
-                //     });
-                  moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => console.log('almost'))
+                  // fetchImageUrl(originPathBusiness)
+                  fetchImageUrl(originPath)
+                  // moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => {
+                  //   fetchImageUrl(originPath)
+                  //   console.log('almost')})
                 })
               } else {
-                console.log("Location permission denied");
+                console.log("Storage permission denied");
               }
             } catch (err) {
               console.warn(err);
             }
           }
     }
+
+    const fetchImageUrl =async (statusPath) => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: "Storage Permission",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // let statusPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
+          RNFS.readDir(statusPath)
+          .then((result) => {
+            const singleImageUrls = []
+            let key = 1
+            result.map((res)=>{
+              if (res.isFile()){
+                let filename = res['path'].substring(res['path'].lastIndexOf('/') + 1, res['path'].length)
+                if (filename.match(/.(jpg|jpeg)$/i)){
+                  let object = {'imageURI':"file://"+statusPath+'/'+filename,"key":key}
+                  key += 1
+                  singleImageUrls.push(object)
+                }
+              }
+            })
+            setimageData(singleImageUrls)
+            console.log("Image Urls Set")
+            return
+          })
+          .catch((err) => {
+            console.log(err.message, err.code);
+          });
+        } else {
+          console.log("Storage permission denied");
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
     useEffect(() => {
         fetchStatuses()
     }, [])
 
-    const DATA = [
-      {
-        id: 0,
-        postTitle: 'Lampost',
-        imageURI:
-          'https://images.unsplash.com/photo-1642986951104-428827cfe46b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-      },
-      {
-        id: 1,
-        postTitle: 'Planet of Nature',
-        imageURI:
-          'https://images.unsplash.com/photo-1642980074229-439281d19f29?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      },
-      {
-        id: 2,
-        postTitle: 'Lampost',
-        imageURI:
-          'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      },
-      {
-        id: 3,
-        postTitle: 'Lampost',
-        imageURI:
-          'https://images.unsplash.com/photo-1642940792376-7819eeaa84a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
+    const shareImage = (path) => {
+      const shareOptions = {
+        title: 'Share Status',
+        url: path,
+      };
+      Share.open(shareOptions)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          err && console.log(err);
+        });
+    }
+
+    const downloadImage =async (filePath) => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: "Storage Permission",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            let fileName = filePath.split('/').slice(-1).pop()
+            let destPath = `${RNFS.ExternalStorageDirectoryPath}/Download/${fileName}`
+            RNFS.copyFile(filePath,destPath).then(()=>{
+              Alert.alert('File Downloaded Successfully !!!','Check Download Folder')
+            }).then(() => {
+                  CameraRoll.save(destPath, "photo");
+              })
+              .catch((e) => {
+              })
+            return
+        } else {
+          console.log("Storage permission denied");
+        }
+      } catch (err) {
+        console.warn(err);
       }
-    ]
+    }
 
     function post({item}) {
       return (
@@ -110,7 +172,7 @@ const StatusSaver = () => {
             {item.imageURI ? (
               <Image
                 style={{width: '100%', height: 300,borderRadius:10}}
-                source={{uri:  item.imageURI}}
+                source={{uri: item.imageURI}}
               />
             ) : null}
           </View>
@@ -124,19 +186,19 @@ const StatusSaver = () => {
               onPress={() => shareImage(item.imageURI)}>
               <MaterialCommunityIcons
                 name="share"
-                size={30}
+                size={26}
                 color="white"
                 style={{paddingRight: 30}}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => pickImage(post.client_id)}
+              onPress={() => downloadImage(item.imageURI)}
               style={{
                 ...styles.postStatsOpacity,
               }}>
               <MaterialCommunityIcons
                 name="download"
-                size={30}
+                size={26}
                 color="white"
                 style={{paddingRight: 20,paddingTop:3}}
               />
@@ -148,39 +210,39 @@ const StatusSaver = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.premiumContainer}>
+            <View style={styles.statusSaverContainer}>
                 <View style={{flexDirection:'row',alignItems:'center', width:'100%',backgroundColor:'#FF6347'}}>
                   <MaterialCommunityIcons name="keyboard-backspace" color={"white"} size={34} onPress={()=>props.navigation.navigate('Dashboard')} style={{width:'20%',padding:15}} />
-                  <Text style={styles.premiumTitle}>Status Saver</Text>
+                  <Text style={styles.statusSaverTitle}>Status Saver</Text>
                 </View>
                 <FlatList
-                  style={{flex:1,width:"100%"}}
-                  data={DATA}
+                  style={{flex:1,width:"100%",backgroundColor:'lightgrey'}}
+                  data={imageData}
                   renderItem={post}
-                  keyExtractor={DATA.id}
+                  keyExtractor={imageData.key}
                 />
             </View>
         </SafeAreaView>
     )
 }
 
-export default StatusSaver
+export default StatusSaver;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",
     },
-    premiumContainer:{
+    statusSaverContainer:{
         flex:1,
         alignItems:'center',
     },
-    premiumTitle:{
+    statusSaverTitle:{
         width:'60%',
         fontSize:28,
         marginTop:15,
         marginBottom:20,
-        fontWeight: '900',
+        fontWeight: '500',
         // color: 'darkslategrey',
         color:'white',
         fontFamily: "Roboto",
@@ -217,4 +279,4 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 8,
       },
-})
+});

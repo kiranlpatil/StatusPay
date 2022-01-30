@@ -6,5 +6,6 @@ export default {
     share: 'शेयर करे',
     premiumUser: 'प्रीमियम यूजर',
     whatsappStatusSaver: 'वॉट्स्ऐप स्टेटस सेवर',
-    payment:'पेमेंट'
+    payment:'पेमेंट', 
+    termsAndCond:'नियम और शर्तें'
   };

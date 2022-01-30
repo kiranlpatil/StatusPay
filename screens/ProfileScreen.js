@@ -137,12 +137,12 @@ const ProfileScreen = props => {
         </View>
 
         <View style={styles.menuWrapper}>
-          <TouchableRipple onPress={() => {}}>
+          {/* <TouchableRipple onPress={() => {}}>
             <View style={styles.menuItem}>
               <Icon name="heart-outline" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>Your Favorites</Text>
             </View>
-          </TouchableRipple>
+          </TouchableRipple> */}
           <TouchableRipple onPress={() => {}}>
             <View style={styles.menuItem}>
               <FontAwesome5 name="history" size={24} color="#FF6347" />
@@ -209,7 +209,7 @@ const ProfileScreen = props => {
           <TouchableRipple onPress={() => props.navigation.navigate('TermsAndCond')}>
             <View style={styles.menuItem}>
               <MaterialCommunityIcons name="file-document" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>Terms And Conditions</Text>
+              <Text style={styles.menuItemText}>{t('profile:termsAndCond')}</Text>
             </View>
           </TouchableRipple>
           <TouchableRipple onPress={() => {props.navigation.navigate('Privacy Policy')}} style={{borderBottomColor: '#dddddd',borderBottomWidth: 1}}>

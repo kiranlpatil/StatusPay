@@ -241,13 +241,8 @@ const PageFirst = ({firstData}) => {
         />
       </View>
       <View style={styles.textInputBox}>
-        <Text style={styles.startTextBox}>{'Caption: '}</Text>
-        <TextInput
-          style={styles.text}
-          placeholder="(optional)"
-          placeholderTextColor='lightgrey'
-          multiline={true}
-        />
+        <Text style={styles.startTextBox}>{'Email*: '}</Text>
+        <TextInput style={styles.text} placeholder=" Enter Email" placeholderTextColor='lightgrey' />
       </View>
       <View
         style={
@@ -291,12 +286,17 @@ const PageFirst = ({firstData}) => {
         )}
       </View>
       <View style={styles.textInputBox}>
-        <Text style={styles.startTextBox}>{'Email: '}</Text>
+        <Text style={styles.startTextBox}>{'Address: '}</Text>
         <TextInput style={styles.text} placeholder=" (optional)" placeholderTextColor='lightgrey' />
       </View>
       <View style={styles.textInputBox}>
-        <Text style={styles.startTextBox}>{'Address: '}</Text>
-        <TextInput style={styles.text} placeholder=" (optional)" placeholderTextColor='lightgrey' />
+        <Text style={styles.startTextBox}>{'Caption: '}</Text>
+        <TextInput
+          style={styles.text}
+          placeholder="(optional)"
+          placeholderTextColor='lightgrey'
+          multiline={true}
+        />
       </View>
       <View
         style={
@@ -311,14 +311,13 @@ const PageFirst = ({firstData}) => {
             justifyContent: 'center',
             height: 20,
             padding: 30,
-            borderRadius: 20,
+            borderRadius: 20
           }}
           onPress={() => pickImage()}>
           <Text
             style={{
               paddingRight: 20,
               paddingLeft: 20,
-              color: 'white',
               fontSize: 16,
             }}>
             Upload Post
@@ -511,7 +510,7 @@ const PageThird = () => {
 };
 
 const PageFourth = () => {
-  const [range, setRange] = useState(500);
+  const [range, setRange] = useState(100);
   const [duration, setDuration] = useState(1);
   const actualReach = range * 5;
   const fromReach = roundValue(actualReach - 0.2 * actualReach);
@@ -668,13 +667,13 @@ const PageFourth = () => {
         </Text>
         <Slider
           style={{width: 250, height: 40, padding: 10}}
-          minimumValue={500}
-          maximumValue={100000}
+          minimumValue={100}
+          maximumValue={10000}
           minimumTrackTintColor="tomato"
           maximumTrackTintColor="#000"
           thumbTintColor="tomato"
-          step={500}
-          value={500}
+          step={100}
+          value={100}
           onValueChange={value => setRange(parseInt(value))}
         />
         <TouchableOpacity
@@ -688,7 +687,7 @@ const PageFourth = () => {
             alignSelf: 'center',
             elevation: 5,
           }}>
-          <Text style={{fontWeight: 'bold'}}>Submit</Text>
+          <Text style={{fontWeight: 'bold',color:'lightgrey'}}>Submit</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

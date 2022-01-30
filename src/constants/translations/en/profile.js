@@ -6,5 +6,6 @@ export default {
     share: 'Refer your Friends',
     premiumUser: 'Premium User',
     whatsappStatusSaver: 'Whatsapp Status Saver',
-    payment:'Payment'
+    payment:'Payment',
+    termsAndCond: "Terms And Conditions"
   };
