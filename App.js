@@ -22,10 +22,9 @@ const {Navigator, Screen} = createStackNavigator();
 
 const StackNavigator = () => (
   <Navigator screenOptions={{headerShown: false}}>
-    {/* <Screen name="Login" component={LoginScreen} />
+sdf    <Screen name="Login" component={LoginScreen} />
     <Screen name="OtpVerify" component={OtpScreen} />
-    <Screen name="Signup Page" component={SignUp} /> */}
-    <Screen name="Status Saver" component={StatusSaver} />
+    <Screen name="Signup Page" component={SignUp} />
     <Screen name="Dashboard" component={DashboardScreen} />
     <Screen name='LangSetting' component={Selector} />
     <Screen name='FAQ' component={FAQ} />
@@ -36,7 +35,7 @@ const StackNavigator = () => (
     <Screen name="Status Saver" component={StatusSaver} />
     <Screen name='Privacy Policy' component={PrivacyPolicy} />
     <Screen name="TermsAndCond" component={TAndC} />
-    
+
   </Navigator>
 );
 class App extends Component {

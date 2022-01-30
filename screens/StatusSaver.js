@@ -7,73 +7,73 @@ import {NativeModules} from 'react-native';
 const RNFetchBlob = NativeModules.RNFetchBlob
 
 const StatusSaver = () => {
-    const [disabledBtn, setDisabledBtn] = useState(false);
-    const moveAll = async (path, outputPath) => {
-      // is a folder
-      if (path.split(".").length == 1) {
-        // CHeck if folder already exists
-        let exists = await RNFS.exists(outputPath);
-        if (exists) {
-          await RNFS.unlink(outputPath);
-          await RNFS.mkdir(outputPath);
-        }
-        // MAKE FRESH FOLDER
-        let result = await RNFS.readDir(path);
-        for (let i = 0; i < result.length; i++) {
-          if (result[i].isDirectory()) {
-            await RNFS.mkdir(outputPath + "/" + result[i].name);
-          }
-          let val = await moveAll(result[i].path, outputPath + "/" + result[i].name);
-        }
-        await RNFS.unlink(path);
-        return 1;
-      } else {
-        await RNFS.moveFile(path, outputPath);
-        return 1;
+  const [disabledBtn, setDisabledBtn] = useState(false);
+  const moveAll = async (path, outputPath) => {
+    // is a folder
+    if (path.split(".").length == 1) {
+      // CHeck if folder already exists
+      let exists = await RNFS.exists(outputPath);
+      if (exists) {
+        await RNFS.unlink(outputPath);
+        await RNFS.mkdir(outputPath);
       }
-    
+      // MAKE FRESH FOLDER
+      let result = await RNFS.readDir(path);
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].isDirectory()) {
+          await RNFS.mkdir(outputPath + "/" + result[i].name);
+        }
+        let val = await moveAll(result[i].path, outputPath + "/" + result[i].name);
+      }
+      await RNFS.unlink(path);
+      return 1;
+    } else {
+      await RNFS.moveFile(path, outputPath);
+      return 1;
+    }
+
     const fetchStatuses = async () => {
-        if (Platform.OS === "android") {
-            console.log("os : ANdroid");
-            // console.log(Platform.constants['Release'] == 11)
-            try {
-              const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                {
-                  title: "Facex Location Permission",
-                  message:
-                    "App needs access to your location " +
-                    "so we can show you directions",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
-                }
-              );
-              console.log(granted);
-              if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                let originPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`;
-                let outputPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
-                console.log("Location permission allowed");
-                RNFS.exists(originPath).then((success) => {
-                //   console.log('File Exists!'); // <--- here RNFS can read the file and returns this
-                //   RNFS.copyFile(originPath, outputPath)
-                //     .then(result => {
-                //       console.log('file copied:', result);
-                //     })
-                //     .catch(err => {
-                //       console.log(err);
-                //     });
-                  moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => console.log('almost'))
-                })
-              } else {
-                console.log("Location permission denied");
-              }
-            } catch (err) {
-              console.warn(err);
+      if (Platform.OS === "android") {
+        console.log("os : ANdroid");
+        // console.log(Platform.constants['Release'] == 11)
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: "Facex Location Permission",
+              message:
+                "App needs access to your location " +
+                "so we can show you directions",
+              buttonNegative: "Cancel",
+              buttonPositive: "OK"
             }
+          );
+          console.log(granted);
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            let originPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`;
+            let outputPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
+            console.log("Location permission allowed");
+            RNFS.exists(originPath).then((success) => {
+              //   console.log('File Exists!'); // <--- here RNFS can read the file and returns this
+              //   RNFS.copyFile(originPath, outputPath)
+              //     .then(result => {
+              //       console.log('file copied:', result);
+              //     })
+              //     .catch(err => {
+              //       console.log(err);
+              //     });
+              moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => console.log('almost'))
+            })
+          } else {
+            console.log("Location permission denied");
           }
+        } catch (err) {
+          console.warn(err);
+        }
+      }
     }
     useEffect(() => {
-        fetchStatuses()
+      fetchStatuses()
     }, [])
 
     const DATA = [
@@ -103,30 +103,30 @@ const StatusSaver = () => {
       }
     ]
 
-    function post({item}) {
+    function post({ item }) {
       return (
         <View style={styles.postView}>
           <View>
             {item.imageURI ? (
               <Image
-                style={{width: '100%', height: 300,borderRadius:10}}
-                source={{uri:  item.imageURI}}
+                style={{ width: '100%', height: 300, borderRadius: 10 }}
+                source={{ uri: item.imageURI }}
               />
             ) : null}
           </View>
           <View
             style={{
               marginVertical: 15,
-              flexDirection:'row-reverse',
+              flexDirection: 'row-reverse',
             }}>
             <TouchableOpacity
-              style={{...styles.postStatsOpacity}}
+              style={{ ...styles.postStatsOpacity }}
               onPress={() => shareImage(item.imageURI)}>
               <MaterialCommunityIcons
                 name="share"
                 size={30}
                 color="white"
-                style={{paddingRight: 30}}
+                style={{ paddingRight: 30 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -138,7 +138,7 @@ const StatusSaver = () => {
                 name="download"
                 size={30}
                 color="white"
-                style={{paddingRight: 20,paddingTop:3}}
+                style={{ paddingRight: 20, paddingTop: 3 }}
               />
             </TouchableOpacity>
           </View>
@@ -147,21 +147,24 @@ const StatusSaver = () => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.premiumContainer}>
-                <View style={{flexDirection:'row',alignItems:'center', width:'100%',backgroundColor:'#FF6347'}}>
-                  <MaterialCommunityIcons name="keyboard-backspace" color={"white"} size={34} onPress={()=>props.navigation.navigate('Dashboard')} style={{width:'20%',padding:15}} />
-                  <Text style={styles.premiumTitle}>Status Saver</Text>
-                </View>
-                <FlatList
-                  style={{flex:1,width:"100%"}}
-                  data={DATA}
-                  renderItem={post}
-                  keyExtractor={DATA.id}
-                />
-            </View>
-        </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.premiumContainer}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: '#FF6347' }}>
+            <MaterialCommunityIcons name="keyboard-backspace" color={"white"} size={34}
+                                    onPress={() => props.navigation.navigate('Dashboard')}
+                                    style={{ width: '20%', padding: 15 }} />
+            <Text style={styles.premiumTitle}>Status Saver</Text>
+          </View>
+          <FlatList
+            style={{ flex: 1, width: "100%" }}
+            data={DATA}
+            renderItem={post}
+            keyExtractor={DATA.id}
+          />
+        </View>
+      </SafeAreaView>
     )
+  }
 }
 
 export default StatusSaver

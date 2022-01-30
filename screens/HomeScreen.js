@@ -18,12 +18,10 @@ import httpDelegateService from '../services/http-delegate.service';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {launchImageLibrary} from 'react-native-image-picker';
 import EncryptedStorage from 'react-native-encrypted-storage';
-
-// import * as ImagePicker from 'expo-image-picker';
-// import * as MediaLibrary from 'expo-media-library';
-// import * as FileSystem from 'expo-file-system';
-// import * as Camera from 'expo-camera';
-// import * as Sharing from 'expo-sharing';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob';
+const fs = RNFetchBlob.fs;
+let imagePath = null;
 
 const BG_IMG =
   'https://images.pexels.com/photos/2470655/pexels-photo-2470655.jpeg';
@@ -87,7 +85,29 @@ export default function HomeScreen() {
     setData()
   }, []);
 
-  
+  const onShare =  async () => {
+    RNFetchBlob.fetch('GET', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png')
+      .then((resp) => {
+        let base64image = resp.data;
+        share('data:image/png;base64,' + base64image);
+      }).catch((err) => share());
+  }
+
+  const share = (base64image) => {
+    let shareOptions = {
+      title: 'Title',
+      url: base64image,
+      message: "Hello This is StatusPay Shared Image" ,
+      social: Share.Social.WHATSAPP,
+      subject: "Subject"
+    }
+    Share.shareSingle(shareOptions)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {});
+  };
+
   const setData = async () => {
     try {
       const res = await EncryptedStorage.getItem("token")
@@ -110,7 +130,7 @@ export default function HomeScreen() {
                       }
                       const session = await EncryptedStorage.getItem("user_mobile");
                       console.log('DATA SET',session)
-                  }else{
+                  } else {
                       console.log(r)
                       await EncryptedStorage.removeItem('user_mobile');
                       await EncryptedStorage.removeItem('district');
@@ -190,7 +210,7 @@ export default function HomeScreen() {
                 ? {...styles.postStatsOpacity, backgroundColor: 'grey'}
                 : {...styles.postStatsOpacity, backgroundColor: 'green'}
             }
-            onPress={disabledBtn ? null : () => shareImage(post.image)}>
+            onPress={disabledBtn ? null : () => onShare()}>
             <MaterialCommunityIcons
               name="cloud-download-outline"
               size={24}
@@ -229,47 +249,34 @@ export default function HomeScreen() {
       quality: 1,
       includeBase64: true,
     });
-    console.log(result);
-    // if (Platform.OS !== 'web') {
-    //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //   if (status !== 'granted') {
-    //     alert('Sorry, we need camera roll permissions to make this work!');
-    //   }
-    // }
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   allowsEditing: true,
-    //   quality: 1,
-    //   base64: true,
-    // });
-    // if (result?.base64?.length > 0) {
-    //   const sizeInBytes =
-    //     4 * Math.ceil(result.base64.length / 3) * 0.5624896334383812;
-    //   const sizeInKb = sizeInBytes / 1000;
-    //   console.log(sizeInKb);
-    //   if (sizeInKb <= 1024) {
-    //     const imageSource = {
-    //       file_bas64: result.base64,
-    //       client_id: clientId,
-    //       user_id: '71734234',
-    //     };
-    //     httpDelegateService(
-    //       'https://statuspe.herokuapp.com/Upload/upload',
-    //       imageSource,
-    //     ).then(result => {
-    //       if (result.status === 'Success') {
-    //         Alert.alert('Success', 'Image uploaded successfully');
-    //       } else {
-    //         alert('Bye');
-    //       }
-    //     });
-    //   } else {
-    //     Alert.alert(
-    //       'Upload size limit exceeded',
-    //       'Image should not be more than 1MB',
-    //     );
-    //   }
-    // }
+    if (result.assets[0].base64.length > 0) {
+      const sizeInBytes =
+        4 * Math.ceil(result.assets[0].base64.length / 3) * 0.5624896334383812;
+      const sizeInKb = sizeInBytes / 1000;
+      console.log(sizeInKb);
+      if (sizeInKb <= 1024) {
+        const imageSource = {
+          file_bas64: result.assets[0].base64,
+          client_id: clientId,
+          user_id: '71734234',
+        };
+        httpDelegateService(
+          'https://statuspe.herokuapp.com/Upload/upload',
+          imageSource,
+        ).then(result => {
+          if (result.status === 'Success') {
+            Alert.alert('Success', 'Image uploaded successfully');
+          } else {
+            alert('Bye');
+          }
+        });
+      } else {
+        Alert.alert(
+          'Upload size limit exceeded',
+          'Image should not be more than 1MB',
+        );
+      }
+    }
   };
 
   const shareImage = i => {

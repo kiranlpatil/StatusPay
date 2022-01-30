@@ -27,6 +27,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import EncryptedStorage from 'react-native-encrypted-storage';
 import RNPgReactNativeSDK from 'react-native-pg-react-native-sdk';
 import LottieView from 'lottie-react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 let cities = require('../Data/states&cities.json');
 
@@ -79,46 +80,40 @@ const PageFirst = ({firstData}) => {
   const [post, setPost] = useState('');
 
   const pickImage = async clientId => {
-    // if (Platform.OS !== 'web') {
-    //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    //   if (status !== 'granted') {
-    //     alert('Sorry, we need camera roll permissions to make this work!');
-    //   }
-    // }
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   allowsEditing: true,
-    //   quality: 1,
-    //   base64: true,
-    // });
-    // if (result?.base64?.length > 0) {
-    //   const sizeInBytes =
-    //     4 * Math.ceil(result.base64.length / 3) * 0.5624896334383812;
-    //   const sizeInKb = sizeInBytes / 1000;
-    //   console.log(sizeInKb);
-    //   if (sizeInKb <= 1024) {
-    //     const imageSource = {
-    //       file_bas64: result.base64,
-    //       client_id: clientId,
-    //       user_id: '71734234',
-    //     };
-    //     httpDelegateService(
-    //       'https://statuspe.herokuapp.com/Upload/upload',
-    //       imageSource,
-    //     ).then(result => {
-    //       if (result.status === 'Success') {
-    //         Alert.alert('Success', 'Image uploaded successfully');
-    //       } else {
-    //         alert('Bye');
-    //       }
-    //     });
-    //   } else {
-    //     Alert.alert(
-    //       'Upload size limit exceeded',
-    //       'Image should not be more than 1MB',
-    //     );
-    //   }
-    // }
+    const result = await launchImageLibrary({
+      mediaTypes: 'photo',
+      quality: 1,
+      includeBase64: true,
+    });
+    console.log(result.assets[0].base64.length)
+    if (result.assets[0].base64.length > 0) {
+      const sizeInBytes =
+        4 * Math.ceil(result.assets[0].base64.length / 3) * 0.5624896334383812;
+      const sizeInKb = sizeInBytes / 1000;
+      console.log(sizeInKb);
+      if (sizeInKb <= 1024) {
+        const imageSource = {
+          file_bas64: result.assets[0].base64,
+          client_id: clientId,
+          user_id: '71734234',
+        };
+        httpDelegateService(
+          'https://statuspe.herokuapp.com/Upload/upload',
+          imageSource,
+        ).then(result => {
+          if (result.status === 'Success') {
+            Alert.alert('Success', 'Image uploaded successfully');
+          } else {
+            alert('Bye');
+          }
+        });
+      } else {
+        Alert.alert(
+          'Upload size limit exceeded',
+          'Image should not be more than 1MB',
+        );
+      }
+    }
   };
 
   const getOtp = () => {
@@ -269,7 +264,7 @@ const PageFirst = ({firstData}) => {
           onPress={() => {
             showVerifyNoModal('true');
           }}
-          disabled={verified}>  
+          disabled={verified}>
           <Text style={{fontWeight: '700', color:'grey'}}>
             {verified ? 'Verified' : 'Add & Verify'}
           </Text>
@@ -405,7 +400,7 @@ const PageSecond = () => {
                   }))}
                   onValueChange={value => {
                     setState(value);
-                  }} 
+                  }}
                   style={{...pickerSelectStyles}}
                   value={state}
                 />
@@ -456,15 +451,20 @@ const PageThird = () => {
   const [radioValue, setRadioValue] = useState('Public');
   const [value, setValue] = useState('');
   const [warning, setWarning] = useState('');
+  const [loaderActive, setLoaderActive] = useState(false);
 
   const searchForCode = text => {
     setValue(text);
     if (text.length > 2) {
+      setLoaderActive(true);
       getAPI(
         'https://androclick-backend.herokuapp.com/user/client-code?code=' +
           text.toUpperCase(),
       ).then(res => {
+        setLoaderActive(false);
         setWarning(res.description);
+      }).catch(() => {
+        setLoaderActive(false);
       });
     }
   };
@@ -490,7 +490,7 @@ const PageThird = () => {
         {value !== '' && value.length > 2 && warning}
       </Text>
 
-      <ActivityIndicator visible={true} />
+      <ActivityIndicator animating = {loaderActive} />
 
       <View style={styles.modalView1}>
         <Text style={styles.modalText1}>Select Campaign Scope</Text>
@@ -592,7 +592,7 @@ const PageFourth = () => {
                       setTimeout(() => {
                           setIsSuccess(false)
                       }, 2500);
-                  }  
+                  }
                 } catch (error) {
                   console.log(error,"CATCH BLOCK")
                   setIsSuccess(true)
@@ -821,7 +821,6 @@ const Paginator = ({data, scrollX}) => {
 const AdContent = ({item}) => {
   const {width} = useWindowDimensions();
   const [firstData, setFirstData] = useState();
-  console.log('kiran - ', firstData);
   return (
     <SafeAreaView style={[styles.container3, {width}]}>
       <View style={{flex: 0.3}}>
