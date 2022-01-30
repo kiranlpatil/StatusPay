@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/dist/Ionicons';
 import Selector from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
 import { TouchableOpacity } from 'react-native';
+import EncryptedStorage from "react-native-encrypted-storage";
 
 
 const ProfileScreen = props => {
@@ -24,7 +25,7 @@ const ProfileScreen = props => {
   useEffect(() => {
     async function getSaved() {
       //   let res = await getData();
-      let body = 9695228178;
+      let body = await EncryptedStorage.getItem('user_mobile');
       getAPI('https://statuspe.herokuapp.com/user/getuser?mobile=' + body).then(
         result => {
           if (result.status === 'Success') {

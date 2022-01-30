@@ -33,11 +33,7 @@ const StatusSaver = (props) => {
           }
           let val = await moveAll(result[i].path, outputPath + "/" + result[i].name);
         }
-        await RNFS.unlink(path);
-        return 1;
-      } else {
-        await RNFS.moveFile(path, outputPath);
-        return 1;
+        let val = await moveAll(result[i].path, outputPath + "/" + result[i].name);
       }
     }
     const fetchStatuses = async () => {
@@ -74,8 +70,27 @@ const StatusSaver = (props) => {
             } catch (err) {
               console.warn(err);
             }
+        };
+          console.log(granted);
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            let originPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/com.whatsapp/WhatsApp/Media/.Statuses`;
+            let outputPath = `${RNFS.ExternalStorageDirectoryPath}/Android/media/StatusPe`;
+            console.log("Location permission allowed");
+            RNFS.exists(originPath).then((success) => {
+              //   console.log('File Exists!'); // <--- here RNFS can read the file and returns this
+              //   RNFS.copyFile(originPath, outputPath)
+              //     .then(result => {
+              //       console.log('file copied:', result);
+              //     })
+              //     .catch(err => {
+              //       console.log(err);
+              //     });
+              moveAll(originPath, outputPath).then(() => console.log('DONE')).catch(err => console.log('Error: - ', err)).finally(() => console.log('almost'))
+            })
+          } else {
+            console.log("Location permission denied");
           }
-    }
+      }
 
     const fetchImageUrl =async (statusPath) => {
       try {
@@ -119,7 +134,7 @@ const StatusSaver = (props) => {
     }
 
     useEffect(() => {
-        fetchStatuses()
+      fetchStatuses()
     }, [])
 
     const shareImage = (path) => {
@@ -165,7 +180,7 @@ const StatusSaver = (props) => {
       }
     }
 
-    function post({item}) {
+    function post({ item }) {
       return (
         <View style={styles.postView}>
           <View>
@@ -179,16 +194,16 @@ const StatusSaver = (props) => {
           <View
             style={{
               marginVertical: 15,
-              flexDirection:'row-reverse',
+              flexDirection: 'row-reverse',
             }}>
             <TouchableOpacity
-              style={{...styles.postStatsOpacity}}
+              style={{ ...styles.postStatsOpacity }}
               onPress={() => shareImage(item.imageURI)}>
               <MaterialCommunityIcons
                 name="share"
                 size={26}
                 color="white"
-                style={{paddingRight: 30}}
+                style={{ paddingRight: 30 }}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -200,7 +215,7 @@ const StatusSaver = (props) => {
                 name="download"
                 size={26}
                 color="white"
-                style={{paddingRight: 20,paddingTop:3}}
+                style={{ paddingRight: 20, paddingTop: 3 }}
               />
             </TouchableOpacity>
           </View>
@@ -224,7 +239,7 @@ const StatusSaver = (props) => {
             </View>
         </SafeAreaView>
     )
-}
+  }
 
 export default StatusSaver;
 

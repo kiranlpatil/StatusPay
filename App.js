@@ -22,7 +22,7 @@ const {Navigator, Screen} = createStackNavigator();
 
 const StackNavigator = () => (
   <Navigator screenOptions={{headerShown: false}}>
-    {/* <Screen name="Login" component={LoginScreen} />
+    <Screen name="Login" component={LoginScreen} />
     <Screen name="OtpVerify" component={OtpScreen} />
     <Screen name="Signup Page" component={SignUp} /> */}  
     <Screen name="Dashboard" component={DashboardScreen} />

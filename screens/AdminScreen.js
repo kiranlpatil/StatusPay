@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getAPI} from '../services/http-delegate.service';
 
@@ -19,7 +20,13 @@ export default function AdminDashboard(props) {
         'https://statuspe.herokuapp.com/user/admin-dashboard?admin_id=' +
           '71734234',
       ).then(result => {
-        clientList(JSON.parse(result.user_uploads));
+        if (result && result?.user_uploads) {
+          clientList(JSON.parse(result.user_uploads));
+        } else {
+          Alert.alert('Empty image upload list', 'Try again later');
+        }
+      }).catch(() => {
+        Alert.alert('Empty image upload list', 'Try again later');
       });
     }
     getSaved().then();
